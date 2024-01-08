@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- classifica.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Classifica">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/contactsRecyclerView"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="140dp"
+        android:layout_height="46dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="CLASSIFICA"
+        android:textSize="24sp" />
+
+    <ListView
+        android:id="@+id/contactsListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="42dp"
+        android:padding="8dp" />
+
+    <FrameLayout
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </RelativeLayout>
-

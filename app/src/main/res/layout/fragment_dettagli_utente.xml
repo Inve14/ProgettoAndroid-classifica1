@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- fragment_dettagli_utente.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".DettagliUtenteFragment">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/userDetailsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text=""
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/btnIndietroDettagli"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="User Details"
+        android:textSize="18sp"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/btnIndietro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Indietro"
         android:layout_below="@id/userDetailsTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Indietro" />
+        android:layout_marginTop="16dp"/>
 
 </RelativeLayout>
-
-

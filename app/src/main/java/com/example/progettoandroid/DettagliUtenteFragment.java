@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
@@ -27,6 +28,16 @@ public class DettagliUtenteFragment extends Fragment {
         // Recupera i dati dall'argomento passato
         String selectedUser = getArguments().getString("selectedUser");
         showUserDetails(selectedUser);
+
+        // Aggiungi la gestione del clic per il bottone Indietro
+        Button btnIndietro = view.findViewById(R.id.btnIndietro);
+        btnIndietro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Torna indietro alla MainActivity
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         return view;
     }

@@ -5,17 +5,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Classifica extends Fragment implements ClassificaRecyclerViewClickListener {
+public class Classifica extends Fragment {
 
     private ClassificaViewModel viewModel;
     private List<String> help;
@@ -29,9 +29,7 @@ public class Classifica extends Fragment implements ClassificaRecyclerViewClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.classifica, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.contactsRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
+        ListView listView = view.findViewById(R.id.contactsListView);
         help = new ArrayList<>();
 
         ApiInterface apiInterface = ClassificaRetrofitClient.getRetrofitIstance().create(ApiInterface.class);
@@ -44,7 +42,6 @@ public class Classifica extends Fragment implements ClassificaRecyclerViewClickL
                     List<User> risposta = response.body();
 
                     for (User user : risposta) {
-
                         ApiInterface apiInterface2 = ClassificaRetrofitClient.getRetrofitIstance().create(ApiInterface.class);
                         Call<UserData> call2 = apiInterface2.getUserData(user.getUid(), "l5p8XVRmz6ApeTVeeUwK");
 
@@ -62,8 +59,15 @@ public class Classifica extends Fragment implements ClassificaRecyclerViewClickL
                                                 viewModel = new ViewModelProvider(requireActivity()).get(ClassificaViewModel.class);
                                                 viewModel.setHelp(help);
 
-                                                ClassificaAdapter adapter = new ClassificaAdapter(requireContext(), viewModel, Classifica.this);
-                                                recyclerView.setAdapter(adapter);
+                                                // Utilizza un ArrayAdapter per popolare la ListView
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, help);
+                                                listView.setAdapter(adapter);
+
+                                                // Aggiungi l'OnClickListener per gestire il clic sugli elementi
+                                                listView.setOnItemClickListener((parent, view, position, id) -> {
+                                                    String selectedUser = help.get(position);
+                                                    avviaDettagliActivity(selectedUser);
+                                                });
                                             }
                                         } else {
                                             Log.d("MainActivity", "onResponse: " + response.errorBody());
@@ -93,26 +97,9 @@ public class Classifica extends Fragment implements ClassificaRecyclerViewClickL
 
         return view;
     }
-    /*
-    @Override
-    public void onItemClicked(int position) {
-        String selectedUser = help.get(position);
-        DettagliUtenteFragment dettagliFragment = DettagliUtenteFragment.newInstance(selectedUser);
 
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.info, dettagliFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-     */
-
-    @Override
-    public void onItemClicked(int position) {
-        String selectedUser = help.get(position);
-
-        // Passa le informazioni dell'utente al DettagliUtenteFragment
+    private void avviaDettagliActivity(String selectedUser) {
+        // Avvia DettagliUtenteFragment
         DettagliUtenteFragment dettagliFragment = DettagliUtenteFragment.newInstance(selectedUser);
 
         requireActivity().getSupportFragmentManager()
