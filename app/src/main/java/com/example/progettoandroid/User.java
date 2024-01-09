@@ -39,4 +39,8 @@ public class User {
     public String toString() {
         return  getUid() + " " + getExperience();
     }
+
+    public String getName() {
+        return "ciao";
+    }
 }

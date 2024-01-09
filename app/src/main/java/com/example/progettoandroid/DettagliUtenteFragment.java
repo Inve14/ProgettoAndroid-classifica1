@@ -1,6 +1,7 @@
 package com.example.progettoandroid;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,10 @@ public class DettagliUtenteFragment extends Fragment {
 
     private TextView userDetailsTextView;
 
-    public static DettagliUtenteFragment newInstance(String selectedUser) {
+    public static DettagliUtenteFragment newInstance(User user) {
         DettagliUtenteFragment fragment = new DettagliUtenteFragment();
         Bundle args = new Bundle();
-        args.putString("selectedUser", selectedUser);
+        args.putParcelable("selectedUser", (Parcelable) user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -26,7 +27,7 @@ public class DettagliUtenteFragment extends Fragment {
         userDetailsTextView = view.findViewById(R.id.userDetailsTextView);
 
         // Recupera i dati dall'argomento passato
-        String selectedUser = getArguments().getString("selectedUser");
+        User selectedUser = getArguments().getParcelable("selectedUser");
         showUserDetails(selectedUser);
 
         // Aggiungi la gestione del clic per il bottone Indietro
@@ -42,8 +43,8 @@ public class DettagliUtenteFragment extends Fragment {
         return view;
     }
 
-    private void showUserDetails(String selectedUser) {
+    private void showUserDetails(User selectedUser) {
         // Mostra le informazioni dell'utente nel TextView
-        userDetailsTextView.setText(selectedUser);
+        userDetailsTextView.setText(selectedUser.getName() + " " + selectedUser.getExperience());
     }
 }

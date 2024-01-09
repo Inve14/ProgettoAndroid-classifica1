@@ -1,5 +1,4 @@
 package com.example.progettoandroid;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ public class Classifica extends Fragment {
     private ClassificaViewModel viewModel;
     private List<String> help;
     private int f = 1;
+    private ProgressBar progressBar;
 
     public Classifica() {
         // Required empty public constructor
@@ -30,14 +31,19 @@ public class Classifica extends Fragment {
         View view = inflater.inflate(R.layout.classifica, container, false);
 
         ListView listView = view.findViewById(R.id.contactsListView);
+        progressBar = view.findViewById(R.id.progressBar);
+
         help = new ArrayList<>();
 
         ApiInterface apiInterface = ClassificaRetrofitClient.getRetrofitIstance().create(ApiInterface.class);
         Call<List<User>> call = apiInterface.getUserInformation("l5p8XVRmz6ApeTVeeUwK");
 
+        progressBar.setVisibility(View.VISIBLE);
+
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
                     List<User> risposta = response.body();
 
@@ -65,7 +71,8 @@ public class Classifica extends Fragment {
 
                                                 // Aggiungi l'OnClickListener per gestire il clic sugli elementi
                                                 listView.setOnItemClickListener((parent, view, position, id) -> {
-                                                    String selectedUser = help.get(position);
+                                                    User selectedUser = risposta.get(position);
+                                                    Log.d("MainActivity", "onItemClick: " + selectedUser);
                                                     avviaDettagliActivity(selectedUser);
                                                 });
                                             }
@@ -86,11 +93,15 @@ public class Classifica extends Fragment {
                             }
                         });
                     }
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    Log.d("MainActivity", "onResponse: " + response.errorBody());
                 }
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
                 Log.d("MainActivity", "onFailure: " + t.getMessage());
             }
         });
@@ -98,10 +109,9 @@ public class Classifica extends Fragment {
         return view;
     }
 
-    private void avviaDettagliActivity(String selectedUser) {
+    private void avviaDettagliActivity(User user) {
         // Avvia DettagliUtenteFragment
-        DettagliUtenteFragment dettagliFragment = DettagliUtenteFragment.newInstance(selectedUser);
-
+        DettagliUtenteFragment dettagliFragment = DettagliUtenteFragment.newInstance(user);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.info, dettagliFragment)
@@ -109,3 +119,4 @@ public class Classifica extends Fragment {
                 .commit();
     }
 }
+
