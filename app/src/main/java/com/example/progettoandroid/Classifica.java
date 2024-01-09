@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,9 +17,6 @@ import retrofit2.Response;
 
 public class Classifica extends Fragment {
 
-    private ClassificaViewModel viewModel;
-    private List<String> help;
-    private int f = 1;
     private ProgressBar progressBar;
 
     public Classifica() {
@@ -33,8 +30,6 @@ public class Classifica extends Fragment {
         ListView listView = view.findViewById(R.id.contactsListView);
         progressBar = view.findViewById(R.id.progressBar);
 
-        help = new ArrayList<>();
-
         ApiInterface apiInterface = ClassificaRetrofitClient.getRetrofitIstance().create(ApiInterface.class);
         Call<List<User>> call = apiInterface.getUserInformation("l5p8XVRmz6ApeTVeeUwK");
 
@@ -47,6 +42,8 @@ public class Classifica extends Fragment {
                 if (response.isSuccessful()) {
                     List<User> risposta = response.body();
 
+                    List<String> userNames = new ArrayList<>();
+
                     for (User user : risposta) {
                         ApiInterface apiInterface2 = ClassificaRetrofitClient.getRetrofitIstance().create(ApiInterface.class);
                         Call<UserData> call2 = apiInterface2.getUserData(user.getUid(), "l5p8XVRmz6ApeTVeeUwK");
@@ -58,23 +55,19 @@ public class Classifica extends Fragment {
                                     if (response.isSuccessful()) {
                                         UserData userData = response.body();
                                         if (userData != null) {
-                                            help.add(f + "° " + userData.getName() + " " + userData.getExperience());
-                                            f++;
+                                            userNames.add(userData.getName() + " - " + userData.getExperience());
 
-                                            if (f > risposta.size()) {
-                                                viewModel = new ViewModelProvider(requireActivity()).get(ClassificaViewModel.class);
-                                                viewModel.setHelp(help);
-
-                                                // Utilizza un ArrayAdapter per popolare la ListView
-                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, help);
-                                                listView.setAdapter(adapter);
-
-                                                // Aggiungi l'OnClickListener per gestire il clic sugli elementi
-                                                listView.setOnItemClickListener((parent, view, position, id) -> {
-                                                    User selectedUser = risposta.get(position);
-                                                    Log.d("MainActivity", "onItemClick: " + selectedUser);
-                                                    avviaDettagliActivity(selectedUser);
+                                            if (userNames.size() == risposta.size()) {
+                                                // Ordina la lista in base all'esperienza
+                                                Collections.sort(userNames, (s1, s2) -> {
+                                                    int exp1 = Integer.parseInt(s1.split(" - ")[1]);
+                                                    int exp2 = Integer.parseInt(s2.split(" - ")[1]);
+                                                    return Integer.compare(exp2, exp1);
                                                 });
+
+                                                // Popola la ListView direttamente senza utilizzare un adapter
+                                                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, userNames);
+                                                listView.setAdapter(arrayAdapter);
                                             }
                                         } else {
                                             Log.d("MainActivity", "onResponse: " + response.errorBody());
@@ -108,15 +101,4 @@ public class Classifica extends Fragment {
 
         return view;
     }
-
-    private void avviaDettagliActivity(User user) {
-        // Avvia DettagliUtenteFragment
-        DettagliUtenteFragment dettagliFragment = DettagliUtenteFragment.newInstance(user);
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.info, dettagliFragment)
-                .addToBackStack(null)
-                .commit();
-    }
 }
-
