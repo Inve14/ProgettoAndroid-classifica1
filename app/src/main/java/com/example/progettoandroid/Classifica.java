@@ -1,12 +1,15 @@
 package com.example.progettoandroid;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,6 +71,11 @@ public class Classifica extends Fragment {
                                                 // Popola la ListView direttamente senza utilizzare un adapter
                                                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, userNames);
                                                 listView.setAdapter(arrayAdapter);
+
+                                                listView.setOnItemClickListener((parent, view, position, id) -> {
+                                                    User selectedUser = risposta.get(position);
+                                                    showUserName(selectedUser.getUid());
+                                                });
                                             }
                                         } else {
                                             Log.d("MainActivity", "onResponse: " + response.errorBody());
@@ -100,5 +108,46 @@ public class Classifica extends Fragment {
         });
 
         return view;
+    }
+
+    private void showUserName(int uid) {
+
+        ApiInterface apiInterface2 = ClassificaRetrofitClient.getRetrofitIstance().create(ApiInterface.class);
+        Call<UserData> callUser = apiInterface2.getUserData(uid, "l5p8XVRmz6ApeTVeeUwK");
+        callUser.enqueue(new Callback<UserData>() {
+            @Override
+            public void onResponse(Call<UserData> call, Response<UserData> response) {
+                try {
+                    if (response.isSuccessful()) {
+                        UserData userDataName = response.body();
+                        // Mostra il nome nel TextView all'interno del FrameLayout
+                        TextView nameTextView = requireView().findViewById(R.id.nameTextView);
+                        nameTextView.setText(userDataName.getName());
+                    } else {
+                        Log.d("MainActivity", "onResponse: " + response.errorBody());
+                    }
+                } catch (Exception e) {
+                    Log.e("MainActivity", "Errore durante la gestione della risposta", e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserData> call, Throwable t) {
+                Log.d("MainActivity", "onFailure: " + t.getMessage());
+            }
+        });
+/*
+        Button backButton = requireView().findViewById(R.id.btnIndietro);
+        backButton.setOnClickListener(v -> {
+            // Nascondi il FrameLayout e mostra la ListView
+            requireView().findViewById(R.id.info).setVisibility(View.GONE);
+            requireView().findViewById(R.id.contactsListView).setVisibility(View.VISIBLE);
+        });
+
+ */
+
+        // Mostra il FrameLayout e nascondi la ListView
+        requireView().findViewById(R.id.info).setVisibility(View.VISIBLE);
+        requireView().findViewById(R.id.contactsListView).setVisibility(View.GONE);
     }
 }

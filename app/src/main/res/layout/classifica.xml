@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- classifica.xml -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="140dp"
-        android:layout_height="46dp"
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="CLASSIFICA"
@@ -16,16 +17,40 @@
         android:id="@+id/contactsListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/titleTextView"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="42dp"
         android:padding="8dp" />
 
     <FrameLayout
         android:id="@+id/info"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:layout_below="@+id/contactsListView"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Torna alla Classifica"
+                android:layout_below="@+id/nameTextView"
+                android:layout_marginTop="16dp" />
+        </RelativeLayout>
+
+        <!-- Aggiungi altre viste o layout se necessario -->
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"

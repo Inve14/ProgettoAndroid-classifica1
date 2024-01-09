@@ -40,7 +40,4 @@ public class User {
         return  getUid() + " " + getExperience();
     }
 
-    public String getName() {
-        return "ciao";
-    }
 }
